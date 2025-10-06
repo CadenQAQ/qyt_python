@@ -132,8 +132,8 @@ def get_single_config(ip, username, password):
 
 if __name__ == '__main__':
     ip = '192.168.136.1'
-    username = 'ubiq'
-    password = 'Ubiqnetwork@1024'
+    username = 'admin'
+    password = 'cisco123'
 
     # 测试单次获取配置
     print("测试单次配置获取:")
