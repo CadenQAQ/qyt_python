@@ -26,4 +26,4 @@ def ssh_get_route(ip,username,password,cmd='ls'):
 if __name__ == "__main__":
     #print(qytang_ssh("1.1.1.1","admin","password@123"))
     #print(qytang_ssh(ip="1.1.1.1", username="admin", password="password@123", cmd="pwd"))
-    print(ssh_get_route("1.1.1.1", "admin", "password@123"))
+    print(ssh_get_route("192.168.136.1", "ubiq", "Ubiqnetwork@1024"))
