@@ -1,29 +1,47 @@
-import paramiko
-import os
+from netmiko import ConnectHandler
+import time
 
-def qytang_ssh(ip,username,password,port=22,cmd='ls'):
-    ssh = paramiko.SSHClient()
-    ssh.load_system_host_keys()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(ip, port, username, password, timeout=5, compress=True)
-    stdin, stdout, stderr = ssh.exec_command(cmd)
-    x = stdout.read().decode()
-    ssh.close()
-    return x
 
-def ssh_get_route(ip,username,password,cmd='ls'):
-    route_n_result = qytang_ssh(ip,username,password,port=22,cmd="/sbin/route -n")
-    ipv4_gw = None
-    for line in route_n_result.splitlines():
-        parts = line.split()
+def qytang_ssh_netmiko(ip, username, password, cmd='show ip route'):
+    """使用netmiko连接网络设备"""
+    try:
+        # 定义设备参数
+        device = {
+            'device_type': 'cisco_ios',  # 根据你的设备类型选择
+            'ip': ip,
+            'username': username,
+            'password': password,
+            'port': 22,
+            'timeout': 30,
+            'session_timeout': 30
+        }
 
-        if len(parts) >= 2 and parts[0] == "0.0.0.0":
-            ipv4_gw = parts[1]
-            break
-    print("网关为:\n")
-    return ipv4_gw
+        print(f"连接到 {ip}...")
 
-if __name__ == "__main__":
-    #print(qytang_ssh("1.1.1.1","admin","password@123"))
-    #print(qytang_ssh(ip="1.1.1.1", username="admin", password="password@123", cmd="pwd"))
-    print(ssh_get_route("192.168.136.1", "ubiq", "Ubiqnetwork@1024"))
+        # 建立连接
+        connection = ConnectHandler(**device)
+
+        # 进入enable模式
+        connection.enable()
+
+        # 禁用分页
+        connection.send_command('terminal length 0')
+
+        # 执行命令
+        output = connection.send_command(cmd)
+
+        # 断开连接
+        connection.disconnect()
+
+        print("✓ 命令执行成功")
+        return output
+
+    except Exception as e:
+        print(f"Netmiko错误: {e}")
+        return None
+
+
+if __name__ == '__main__':
+    result = qytang_ssh_netmiko("192.168.136.1", "ubiq", "Ubiqnetwork@1024")
+    if result:
+        print(result)

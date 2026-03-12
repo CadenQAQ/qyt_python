@@ -1,10 +1,11 @@
+#import netmiko
 from qyt_day8_03 import qytang_ping
-from qyt_day9_01 import qytang_ssh
+from qyt_day9_01 import qytang_ssh_netmiko
 import re
 import pprint
 
 
-def qytang_get_if(ips, username='admin', password='Cisc0123'):
+def qytang_get_if(ips, username='ubiq', password='Ubiqnetwork@1024'):
     """
     获取多个设备的接口信息
     参数:
@@ -26,7 +27,7 @@ def qytang_get_if(ips, username='admin', password='Cisc0123'):
             # SSH登录设备并执行显示接口IP地址的命令
             # 使用'show ip interface brief'命令来获取接口信息
             try:
-                cmd_output = qytang_ssh(ip, username, password, cmd='show ip interface brief')
+                cmd_output = qytang_ssh_netmiko(ip, username, password, cmd='show ip interface brief')
 
                 # 解析命令输出，提取接口和IP地址信息
                 interface_dict = {}
